@@ -1,0 +1,43 @@
+#game-graph {
+    width: 100%;
+    height: 400px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+#game-control-panel {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+#score-panel {
+    display: flex;
+    gap: 20px;
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+.player-score { color: var(--accent); }
+.opponent-score { color: var(--danger); }
+
+#payoff-matrix-display table {
+    border-collapse: collapse;
+    margin-top: 10px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 8px;
+    overflow: hidden;
+}
+#payoff-matrix-display th,
+#payoff-matrix-display td {
+    border: 1px solid rgba(255,255,255,0.1);
+    padding: 6px 10px;
+    text-align: center;
+    color: var(--text-main);
+}
+#payoff-matrix-display th {
+    background: rgba(255,255,255,0.1);
+}

@@ -1,327 +1,210 @@
-/* === ОБЩИЕ СТИЛИ === */
+:root {
+    --bg-color: #0f172a;
+    --card-bg: rgba(30, 41, 59, 0.7);
+    --primary: #8b5cf6;
+    --primary-hover: #7c3aed;
+    --text-main: #f8fafc;
+    --text-muted: #94a3b8;
+    --accent: #10b981;
+    --danger: #ef4444;
+}
+
 * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
 }
 
 body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #1a1a2e;
-  color: #eaeaea;
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+    background-color: var(--bg-color);
+    background-image:
+        radial-gradient(circle at 20% 30%, rgba(139, 92, 246, 0.15) 0%, transparent 40%),
+        radial-gradient(circle at 80% 70%, rgba(16, 185, 129, 0.1) 0%, transparent 40%);
+    color: var(--text-main);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow-x: hidden;
+    overflow-y: auto;
 }
 
-#app {
-  width: 100%;
-  max-width: 1200px;
-  margin: 20px;
-  background-color: #16213e;
-  border-radius: 20px;
-  box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
-  padding: 30px;
-  min-height: 80vh;
+.container {
+    width: 100%;
+    max-width: 1000px;
+    margin: 20px;
+    padding: 20px;
+    position: relative;
 }
 
-/* === ГЛАВНОЕ МЕНЮ === */
-#main-menu {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 20px;
-  padding: 100px 0;
+.screen {
+    display: none;
+    animation: fadeIn 0.4s ease-out forwards;
+}
+.screen.active {
+    display: block;
 }
 
-#main-menu button {
-  width: 250px;
-  padding: 18px 0;
-  font-size: 1.3rem;
-  font-weight: bold;
-  border: none;
-  border-radius: 12px;
-  cursor: pointer;
-  transition: transform 0.2s, box-shadow 0.2s;
-  text-transform: uppercase;
-  letter-spacing: 1px;
+.card {
+    background: var(--card-bg);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 24px;
+    padding: 2rem;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    margin-bottom: 20px;
 }
 
-#main-menu button:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 10px 20px rgba(0,0,0,0.4);
-}
-
-#btn-play {
-  background: linear-gradient(135deg, #0f9b58, #0b7a44);
-  color: white;
-}
-
-#btn-simulator {
-  background: linear-gradient(135deg, #e94560, #c23152);
-  color: white;
-}
-
-#btn-exit {
-  background: #2c3e50;
-  color: #aaa;
-}
-
-/* === ОБЩИЕ ЭКРАНЫ === */
-section {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
+h1 {
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin-bottom: 2rem;
+    letter-spacing: -0.025em;
+    background: linear-gradient(to right, #fff, #94a3b8);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-align: center;
+    white-space: normal;      /* разрешаем перенос */
+    word-break: break-word;
 }
 
 h2 {
-  font-size: 1.8rem;
-  color: #e94560;
-  margin-bottom: 10px;
-  border-bottom: 2px solid #e94560;
-  display: inline-block;
-  padding-bottom: 5px;
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: var(--text-main);
 }
 
-/* === КНОПКИ НАВИГАЦИИ ВНУТРИ ЭКРАНОВ === */
-button {
-  padding: 12px 24px;
-  border: none;
-  border-radius: 8px;
-  background-color: #0f3460;
-  color: white;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.2s, transform 0.1s;
+.description {
+    color: var(--text-muted);
+    margin-bottom: 1.5rem;
+    text-align: center;
 }
 
-button:hover {
-  background-color: #1a508b;
-  transform: scale(1.02);
+.btn {
+    appearance: none;
+    border: none;
+    border-radius: 12px;
+    padding: 1rem 1.5rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    color: white;
+    width: auto;
+}
+.btn-primary {
+    background: linear-gradient(135deg, var(--primary), var(--primary-hover));
+    box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
+}
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(139, 92, 246, 0.4);
+}
+.btn-secondary {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+.btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+.btn-outline {
+    background: transparent;
+    border: 1px solid var(--danger);
+    color: var(--danger);
+}
+.btn-outline:hover {
+    background: rgba(239, 68, 68, 0.1);
 }
 
-button:active {
-  transform: scale(0.98);
+.back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 1rem;
+    padding: 0.5rem 1rem;
+    margin-bottom: 1.5rem;
+    border-radius: 8px;
+    transition: background 0.2s, color 0.2s;
+}
+.back-btn:hover {
+    background: rgba(255,255,255,0.1);
+    color: var(--text-main);
 }
 
-/* === РЕДАКТОР ГРАФОВ === */
-#editor-screen {
-  flex-direction: column;
+.options-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+.option-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 16px;
+    padding: 1.5rem 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+}
+.option-card:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: var(--primary);
+}
+.option-card svg {
+    margin-bottom: 0.75rem;
+    color: var(--primary);
+}
+.option-card span {
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 500;
 }
 
-#editor-toolbar {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  background: #1a1a2e;
-  padding: 15px;
-  border-radius: 12px;
-  align-items: center;
+/* Главное меню — увеличенная карточка для длинного названия */
+#main-menu .card {
+    max-width: 600px;          /* было 400px */
+    margin-left: auto;
+    margin-right: auto;
+    padding: 3rem 2rem;
+}
+#main-menu .button-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.2rem;
+}
+#main-menu .btn {
+    width: 100%;
+    justify-content: center;
+    padding: 1.2rem 2rem;
+    font-size: 1.2rem;
 }
 
-#editor-main {
-  display: flex;
-  gap: 20px;
-  height: 70vh;
+@keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.95) translateY(10px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
 }
 
-#palette {
-  width: 120px;
-  background: #1a1a2e;
-  border-radius: 12px;
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-  align-items: center;
+@media (max-width: 600px) {
+    .container { margin: 10px; padding: 10px; }
+    .card { padding: 1.5rem; }
+    h1 { font-size: 2rem; }
+    h2 { font-size: 1.4rem; }
+    .btn { padding: 0.8rem 1.2rem; font-size: 1rem; }
+    #main-menu .btn { padding: 1rem 1.5rem; font-size: 1.1rem; }
 }
 
-.drag-item {
-  width: 90px;
-  padding: 10px 0;
-  text-align: center;
-  border-radius: 8px;
-  font-weight: bold;
-  cursor: grab;
-  color: white;
-  user-select: none;
-}
-
-.drag-item[data-action="C"] {
-  background: #0f9b58;
-}
-
-.drag-item[data-action="D"] {
-  background: #e94560;
-}
-
-#cy-container {
-  flex: 1;
-  background: #0f3460;
-  border-radius: 12px;
-  position: relative;
-}
-
-/* === ИГРОВОЙ ЭКРАН === */
-#game-area {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-}
-
-#game-graph {
-  width: 100%;
-  height: 400px;
-  background: #0f3460;
-  border-radius: 12px;
-}
-
-#game-control-panel {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 20px;
-  background: #1a1a2e;
-  padding: 15px;
-  border-radius: 12px;
-}
-
-#score-panel {
-  display: flex;
-  gap: 20px;
-  font-size: 1.2rem;
-}
-
-.player-score { color: #0f9b58; }
-.opponent-score { color: #e94560; }
-
-#payoff-matrix-display table {
-  border-collapse: collapse;
-  margin-top: 10px;
-}
-
-#payoff-matrix-display th,
-#payoff-matrix-display td {
-  border: 1px solid #aaa;
-  padding: 4px 8px;
-  text-align: center;
-}
-
-/* === УРОВНИ === */
-#levels-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-  gap: 15px;
-  max-height: 60vh;
-  overflow-y: auto;
-  padding: 10px;
-  background: #1a1a2e;
-  border-radius: 12px;
-}
-
-.level-card {
-  background: #0f3460;
-  border-radius: 10px;
-  padding: 15px;
-  text-align: center;
-  cursor: pointer;
-  transition: transform 0.2s, box-shadow 0.2s;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  min-height: 100px;
-}
-
-.level-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 20px rgba(233, 69, 96, 0.3);
-}
-
-.level-card .level-num {
-  font-size: 2rem;
-  font-weight: bold;
-  color: #e94560;
-}
-
-.level-card .level-desc {
-  font-size: 0.8rem;
-  color: #ccc;
-  margin-top: 5px;
-}
-
-/* === ТУРНИРНАЯ СЕТКА === */
-#tournament-layout {
-  display: flex;
-  gap: 20px;
-  flex: 1;
-}
-
-#tournament-bracket {
-  flex: 2;
-  background: #1a1a2e;
-  padding: 20px;
-  border-radius: 12px;
-  min-height: 300px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 15px;
-}
-
-.bracket-slot {
-  background: #0f3460;
-  border: 2px dashed #eaeaea;
-  border-radius: 10px;
-  padding: 10px;
-  width: 150px;
-  text-align: center;
-  color: #aaa;
-  font-weight: bold;
-  transition: background 0.2s;
-}
-
-.bracket-slot:hover {
-  background: #1a508b;
-  border-color: #e94560;
-}
-
-#strategy-list {
-  flex: 1;
-  background: #1a1a2e;
-  border-radius: 12px;
-  padding: 15px;
-  max-height: 60vh;
-  overflow-y: auto;
-}
-
-.strategy-card {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: #0f3460;
-  padding: 10px;
-  margin-bottom: 8px;
-  border-radius: 8px;
-  cursor: grab;
-  color: white;
-}
-
-.strategy-card:hover {
-  background: #1a508b;
-}
-
-/* === ВСПОМОГАТЕЛЬНЫЕ КЛАССЫ === */
-.hidden {
-  display: none !important;
-}
-
-button.back-btn {
-  background: #2c3e50;
-  color: #ccc;
-}
-
-button.back-btn:hover {
-  background: #3e5a6b;
+@media (min-width: 1200px) {
+    .container { max-width: 1100px; }
 }

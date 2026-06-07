@@ -1,44 +1,37 @@
-import { getPayoff } from "./PayoffMatrix.js";
+import { getPayoff } from './PayoffMatrix.js';
 
 export class Game {
-  constructor(strategy, startNodeId = null, payoffMatrix = null) {
-    this.strategy = strategy;
-    this.currentNodeId = startNodeId || strategy.startNodeId;
-    this.payoffMatrix = payoffMatrix;
-    this.playerScore = 0;
-    this.opponentScore = 0;
-    this.round = 0;
-    this.history = [];
-  }
+    constructor(strategy, startNodeId = null, payoffMatrix = null) {
+        this.strategy = strategy;
+        this.currentNodeId = startNodeId || strategy.startNodeId;
+        this.payoffMatrix = payoffMatrix;
+        this.playerScore = 0;
+        this.opponentScore = 0;
+        this.round = 0;
+        this.history = [];
+    }
 
-  playRound(playerAction) {
-    const opponentAction = this.strategy.getAction(this.currentNodeId);
-    const [player, opponent] = getPayoff(
-      playerAction,
-      opponentAction,
-      this.payoffMatrix,
-    );
-    this.playerScore += player;
-    this.opponentScore += opponent;
+    playRound(playerAction) {
+        const opponentAction = this.strategy.getAction(this.currentNodeId);
+        const [pScore, oScore] = getPayoff(playerAction, opponentAction, this.payoffMatrix);
+        this.playerScore += pScore;
+        this.opponentScore += oScore;
 
-    const nextNodeId = this.strategy.getNextState(
-      this.currentNodeId,
-      playerAction,
-    );
-    this.history.push({
-      round: ++this.round,
-      playerAction,
-      opponentAction,
-      player,
-      opponent,
-      currentNodeId: this.currentNodeId,
-      nextNodeId,
-    });
-    this.currentNodeId = nextNodeId;
-    return { playerAction, opponentAction, player, opponent, nextNodeId };
-  }
+        const nextNodeId = this.strategy.getNextState(this.currentNodeId, playerAction);
+        this.history.push({
+            round: ++this.round,
+            playerAction,
+            opponentAction,
+            pScore,
+            oScore,
+            currentNodeId: this.currentNodeId,
+            nextNodeId
+        });
+        this.currentNodeId = nextNodeId;
+        return { playerAction, opponentAction, pScore, oScore, nextNodeId };
+    }
 
-  getScores() {
-    return { player: this.playerScore, opponent: this.opponentScore };
-  }
+    getScores() {
+        return { player: this.playerScore, opponent: this.opponentScore };
+    }
 }

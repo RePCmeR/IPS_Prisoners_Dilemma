@@ -1,72 +1,102 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <title>Дилемма заключённого — IPS HSE</title>
-  <link rel="stylesheet" href="styles/main.css">
-  <script src="https://unpkg.com/cytoscape/dist/cytoscape.min.js"></script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Итеративная дилемма заключённого</title>
+    <link rel="stylesheet" href="styles/main.css" />
+    <link rel="stylesheet" href="styles/game.css" />
+    <link rel="stylesheet" href="styles/editor.css" />
+    <link rel="stylesheet" href="styles/levels.css" />
+    <link rel="stylesheet" href="styles/simulator.css" />
+    <link rel="stylesheet" href="styles/tournament.css" />
+    <script src="https://unpkg.com/cytoscape/dist/cytoscape.min.js"></script>
 </head>
 <body>
-  <div id="app">
-    <!-- Главное меню -->
-    <section id="main-menu">
-      <button id="btn-play">Играть</button>
-      <button id="btn-simulator">Симулятор</button>
-      <button id="btn-exit">Выход</button>
-    </section>
+    <div id="app" class="container">
+        <section id="main-menu" class="screen active">
+            <div class="card">
+                <h1>Итеративная дилемма заключённого</h1>
+                <div class="button-group">
+                    <button id="btn-play" class="btn btn-primary">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.14v13.72l11-6.86L8 5.14z"/></svg>
+                        Играть
+                    </button>
+                    <button id="btn-simulator" class="btn btn-secondary">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+                        Симулятор
+                    </button>
+                    <button id="btn-exit" class="btn btn-outline">Выход</button>
+                </div>
+            </div>
+        </section>
 
-    <!-- Игра -->
-    <section id="game-screen" style="display:none;">
-      <div id="game-submenu">
-        <button id="btn-random-level">Случайный уровень</button>
-        <button id="btn-levels">Уровни</button>
-        <button id="btn-tutorial">Обучение</button>
-        <button id="btn-back-game">Назад</button>
-      </div>
-      <div id="game-area">
-      </div>
-    </section>
+        <section id="game-screen" class="screen">
+            <div id="game-submenu" class="card" style="display:block;">
+                <h2>Выбор режима</h2>
+                <p class="description">Выберите формат игры</p>
+                <div class="options-grid">
+                    <div id="btn-random-level" class="option-card">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
+                        <span>Случайный уровень</span>
+                    </div>
+                    <div id="btn-levels" class="option-card">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+                        <span>Уровни</span>
+                    </div>
+                    <div id="btn-tutorial" class="option-card">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                        <span>Обучение</span>
+                    </div>
+                </div>
+                <button id="btn-back-game" class="btn btn-secondary" style="margin-top:1rem;">Назад</button>
+            </div>
+            <div id="game-area" class="card" style="display:none;"></div>
+            <div id="tutorial-panel" class="card" style="display:none;">
+                <h2>Обучение</h2>
+                <ul style="text-align:left; margin-bottom:1.5rem; line-height:1.8; list-style:none;">
+                    <li>🟢 <strong>Левая кнопка мыши</strong> по вершине — <span style="color:#4caf50;">Сотрудничать (C)</span></li>
+                    <li>🔴 <strong>Правая кнопка мыши</strong> по вершине — <span style="color:#f44336;">Предать (D)</span></li>
+                    <li>🎯 Ваша цель — набрать больше очков, чем противник</li>
+                </ul>
+                <button id="btn-back-tutorial" class="btn btn-secondary">Назад</button>
+            </div>
+        </section>
 
-    <!-- Симулятор -->
-    <section id="simulator-screen" style="display:none;">
-      <button id="btn-one-vs-one">Один на один</button>
-      <button id="btn-tournament">Турнир</button>
-      <button id="btn-back-sim">Назад</button>
-      <div id="sim-area">
-      </div>
-    </section>
+        <section id="simulator-screen" class="screen">
+            <div class="card">
+                <h2>Симулятор</h2>
+                <p class="description">Выберите режим симуляции</p>
+                <div class="options-grid">
+                    <div id="btn-one-vs-one" class="option-card">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                        <span>Один на один</span>
+                    </div>
+                    <div id="btn-tournament" class="option-card">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
+                        <span>Турнир</span>
+                    </div>
+                </div>
+                <div id="sim-area" style="margin-top: 1.5rem;"></div>
+                <button id="btn-back-sim" class="btn btn-secondary" style="margin-top:1rem;">Назад</button>
+            </div>
+        </section>
 
-    <!-- Редактор стратегий -->
-    <section id="editor-screen" style="display:none;">
-      <div id="editor-toolbar">
-        <button id="btn-toggle-strategy">Моя стратегия / Противник</button>
-        <button id="btn-save-strategy">Сохранить</button>
-        <button id="btn-load-preset">Загрузить встроенную</button>
-        <button id="btn-back-editor">Назад</button>
-      </div>
-      <div id="editor-main">
-        <div id="palette">
-          <div class="drag-item" draggable="true" data-action="C">C-вершина</div>
-          <div class="drag-item" draggable="true" data-action="D">D-вершина</div>
-        </div>
-        <!-- Холст Cytoscape для редактора -->
-        <div id="cy-container"></div>
-      </div>
-    </section>
+        <section id="editor-screen" class="screen"></section>
 
-    <!-- Турнирная сетка -->
-    <section id="tournament-screen" style="display:none;">
-      <div id="tournament-layout">
-        <div id="tournament-bracket"></div>
-        <div id="strategy-list"></div>
-      </div>
-      <div id="tournament-controls">
-        <button id="btn-start-tournament">Старт турнира</button>
-        <button id="btn-back-tournament">Назад</button>
-      </div>
-    </section>
-  </div>
-
-  <script type="module" src="src/main.js"></script>
+        <section id="tournament-screen" class="screen">
+            <div class="card">
+                <div id="tournament-layout">
+                    <div id="tournament-bracket"></div>
+                    <div id="strategy-list"></div>
+                </div>
+                <div id="tournament-controls">
+                    <button id="btn-start-tournament" class="btn btn-primary">Старт турнира</button>
+                </div>
+                <button id="btn-back-tournament" class="btn btn-secondary" style="margin-top:1rem;">Назад</button>
+            </div>
+        </section>
+    </div>
+    <script type="module" src="src/main.js"></script>
 </body>
 </html>

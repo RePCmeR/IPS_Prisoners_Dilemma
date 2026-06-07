@@ -1,0 +1,47 @@
+#editor-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+#editor-main {
+    display: flex;
+    gap: 20px;
+    height: 60vh;
+}
+
+#palette {
+    width: 120px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    align-items: center;
+    padding: 1rem;
+    background: var(--card-bg);
+    backdrop-filter: blur(12px);
+    border-radius: 16px;
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+.drag-item {
+    width: 90px;
+    padding: 10px 0;
+    text-align: center;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: grab;
+    color: white;
+    user-select: none;
+    transition: transform 0.2s;
+}
+.drag-item[data-action="C"] { background: var(--accent); }
+.drag-item[data-action="D"] { background: var(--danger); }
+.drag-item:hover { transform: scale(1.05); }
+
+#cy-container {
+    flex: 1;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 16px;
+    overflow: hidden;
+}

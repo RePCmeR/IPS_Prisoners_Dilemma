@@ -1,0 +1,8 @@
+#sim-area .options-grid {
+    grid-template-columns: 1fr 1fr;
+}
+#sim-area .option-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}

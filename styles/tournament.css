@@ -1,0 +1,65 @@
+#tournament-layout {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+#tournament-bracket {
+    flex: 2;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    min-height: 100px;
+}
+
+.bracket-slot {
+    background: rgba(255,255,255,0.05);
+    border: 2px dashed rgba(255,255,255,0.2);
+    border-radius: 12px;
+    padding: 10px 15px;
+    min-width: 120px;
+    text-align: center;
+    color: var(--text-muted);
+    font-weight: 500;
+    transition: all 0.2s;
+}
+.bracket-slot:hover {
+    border-color: var(--primary);
+    background: rgba(255,255,255,0.1);
+}
+
+#strategy-list {
+    flex: 1;
+    max-height: 50vh;
+    overflow-y: auto;
+    padding-right: 10px;
+}
+
+.strategy-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 10px;
+    padding: 0.8rem 1rem;
+    margin-bottom: 8px;
+    cursor: grab;
+    color: var(--text-main);
+    transition: background 0.2s;
+}
+.strategy-card:hover {
+    background: rgba(255,255,255,0.1);
+}
+.strategy-card .view-graph {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 1.2rem;
+}
+
+#tournament-controls {
+    margin-top: 1.5rem;
+    text-align: center;
+}
