@@ -79,7 +79,16 @@ export class GraphEditor {
                         'target-arrow-shape': 'triangle',
                         'curve-style': 'bezier',
                         'line-color': '#888',
-                        'target-arrow-color': '#888'
+                        'target-arrow-color': '#888',
+                        'label': 'data(label)',
+                        'font-size': 10,
+                        'color': '#fff',
+                        'font-weight': 'bold',
+                        'text-background-color': 'rgba(0,0,0,0.8)',
+                        'text-background-opacity': 0.9,
+                        'text-background-shape': 'round-rectangle',
+                        'text-background-padding': '3px',
+                        'text-rotation': 'autorotate'
                     }
                 },
                 {
@@ -146,13 +155,15 @@ export class GraphEditor {
             });
         });
         strategy.edges.forEach(e => {
+            const label = e.probability ? `${(e.probability * 100).toFixed(0)}%` : '';
             this.cy.add({
                 group: 'edges',
                 data: {
                     source: e.source,
                     target: e.target,
                     playerAction: e.playerAction,
-                    probability: e.probability
+                    probability: e.probability,
+                    label
                 },
                 classes: e.playerAction === 'C' ? 'playerC' : 'playerD'
             });
@@ -268,7 +279,7 @@ export class GraphEditor {
                     return;
                 }
                 const prob = data.probability;
-                const label = data.action + (prob ? ` (${prob.toFixed(2)})` : '');
+                const label = prob ? `${(prob * 100).toFixed(0)}%` : '';
                 this.cy.add({
                     group: 'edges',
                     data: {
@@ -291,7 +302,7 @@ export class GraphEditor {
                 return;
             }
             const prob = data.probability;
-            const label = data.action + (prob ? ` (${prob.toFixed(2)})` : '');
+            const label = prob ? `${(prob * 100).toFixed(0)}%` : '';
             this.cy.add({
                 group: 'edges',
                 data: {
@@ -325,7 +336,8 @@ export class GraphEditor {
                             source: nodeId,
                             target: nodeId,
                             playerAction: action,
-                            probability: 1
+                            probability: 1,
+                            label: ''
                         },
                         classes: action === 'C' ? 'playerC' : 'playerD'
                     });

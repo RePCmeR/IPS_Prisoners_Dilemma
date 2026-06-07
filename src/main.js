@@ -172,6 +172,7 @@ document.getElementById('btn-random-level').onclick = () => {
     const plusBtn = document.getElementById('nodes-plus');
     const startBtn = document.getElementById('nodes-start');
     const cancelBtn = document.getElementById('nodes-cancel');
+    const randomToggle = document.getElementById('nodes-random-toggle');
 
     const updateCount = (value) => {
         slider.value = value;
@@ -186,19 +187,23 @@ document.getElementById('btn-random-level').onclick = () => {
     };
 
     updateCount(5);
+    randomToggle.checked = true;
     modal.style.display = 'flex';
 
     startBtn.onclick = () => {
         const nodeCount = parseInt(slider.value);
+        const useRandom = randomToggle.checked;
         modal.style.display = 'none';
 
         document.getElementById('game-submenu').style.display = 'none';
         document.getElementById('game-area').style.display = 'block';
         if (window.__currentGameUI) window.__currentGameUI.destroy();
 
-        const randomStrat = generateRandomStrategy('Случайный противник', nodeCount, false);
+        const randomStrat = generateRandomStrategy('Случайный противник', nodeCount, useRandom);
         const randomPayoff = generateRandomPayoff();
-        window.__currentGameUI = new GameUI('game-area', randomStrat, 10, randomPayoff, () => {
+        const randomRounds = Math.floor(Math.random() * 11) + 5;
+
+        window.__currentGameUI = new GameUI('game-area', randomStrat, randomRounds, randomPayoff, () => {
             document.getElementById('game-submenu').style.display = 'block';
             document.getElementById('game-area').style.display = 'none';
             window.__currentGameUI = null;

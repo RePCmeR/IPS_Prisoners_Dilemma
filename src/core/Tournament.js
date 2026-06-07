@@ -1,6 +1,7 @@
 import { Game } from './Game.js';
 import { DEFAULT_PAYOFF } from './PayoffMatrix.js';
 
+// Проводит один матч между двумя стратегиями (A – игрок, B – противник)
 export function runMatch(strategyA, strategyB, rounds = 10, payoffMatrix = DEFAULT_PAYOFF) {
     try {
         const game = new Game(strategyB, strategyB.startNodeId, payoffMatrix);
@@ -8,6 +9,7 @@ export function runMatch(strategyA, strategyB, rounds = 10, payoffMatrix = DEFAU
         for (let i = 0; i < rounds; i++) {
             const actionA = strategyA.getAction(currentStateA);
             const result = game.playRound(actionA);
+            // Стратегия A реагирует на ход противника
             currentStateA = strategyA.getNextState(currentStateA, result.opponentAction);
         }
         return game.getScores();
@@ -17,6 +19,7 @@ export function runMatch(strategyA, strategyB, rounds = 10, payoffMatrix = DEFAU
     }
 }
 
+// Круговой турнир: каждая стратегия играет против каждой (по одному матчу)
 export function runTournament(strategies, rounds = 10, payoffMatrix = DEFAULT_PAYOFF) {
     const scores = {};
     strategies.forEach(s => { scores[s.name] = 0; });

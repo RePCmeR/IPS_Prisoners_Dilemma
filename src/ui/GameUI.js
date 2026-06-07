@@ -1,6 +1,7 @@
 import { Game } from '../core/Game.js';
 import { DEFAULT_PAYOFF } from '../core/PayoffMatrix.js';
 
+// HTML-шаблон игрового интерфейса
 function gameUITemplate() {
     return `
     <div id="game-graph"></div>
@@ -19,6 +20,7 @@ function gameUITemplate() {
     `;
 }
 
+// HTML-шаблон таблицы матрицы выигрышей
 function payoffMatrixTemplate(matrix) {
     return `
     <h3>Матрица выигрышей</h3>
@@ -30,6 +32,7 @@ function payoffMatrixTemplate(matrix) {
     `;
 }
 
+// Управляет визуализацией игры и взаимодействием с пользователем
 export class GameUI {
     constructor(containerId, strategy, rounds = 10, payoffMatrix = DEFAULT_PAYOFF, onFinish = null) {
         this.container = document.getElementById(containerId);
@@ -40,18 +43,19 @@ export class GameUI {
         this.currentNodeId = strategy.startNodeId;
         this.playerScore = 0;
         this.opponentScore = 0;
-        this.onFinish = onFinish;
+        this.onFinish = onFinish; // колбэк при завершении игры
 
         this.container.innerHTML = gameUITemplate();
         this.container.style.display = 'block';
         this.game = new Game(strategy, strategy.startNodeId, payoffMatrix);
-        this.cy = this.initCytoscape();
+        this.cy = this.initCytoscape(); // инициализация графа
         this.highlightCurrent();
         this.attachEvents();
         this.updateScore();
         this.createControlPanel();
     }
 
+    // Создаёт экземпляр Cytoscape для отрисовки графа стратегии
     initCytoscape() {
         const cy = cytoscape({
             container: document.getElementById('game-graph'),
@@ -98,7 +102,16 @@ export class GameUI {
                         'target-arrow-shape': 'triangle',
                         'curve-style': 'bezier',
                         'line-color': '#888',
-                        'target-arrow-color': '#888'
+                        'target-arrow-color': '#888',
+                        'label': 'data(label)',
+                        'font-size': 10,
+                        'color': '#fff',
+                        'font-weight': 'bold',
+                        'text-background-color': 'rgba(0,0,0,0.8)',
+                        'text-background-opacity': 0.9,
+                        'text-background-shape': 'round-rectangle',
+                        'text-background-padding': '3px',
+                        'text-rotation': 'autorotate'
                     }
                 },
                 {
@@ -117,6 +130,7 @@ export class GameUI {
         return cy;
     }
 
+    // Преобразует стратегию в элементы Cytoscape
     getCyElements() {
         const nodes = this.strategy.nodes.map(n => ({
             group: 'nodes',
@@ -130,30 +144,41 @@ export class GameUI {
                 source: e.source,
                 target: e.target,
                 playerAction: e.playerAction,
-                probability: e.probability
+                probability: e.probability,
+                label: e.probability ? `${(e.probability * 100).toFixed(0)}%` : ''
             },
             classes: e.playerAction === 'C' ? 'playerC' : 'playerD'
         }));
         return nodes.concat(edges);
     }
 
+    // Подсвечивает текущую вершину
     highlightCurrent() {
         this.cy.nodes().removeClass('current');
         this.cy.getElementById(this.currentNodeId).addClass('current');
     }
 
+    // Назначает обработчики кликов для игры (левая кнопка – C, правая – D)
     attachEvents() {
         this.cy.on('tap', 'node', () => this.playRound('C'));
         this.cy.on('cxttap', 'node', () => this.playRound('D'));
         document.getElementById('game-graph').oncontextmenu = () => false;
     }
 
+    // Выполняет один раунд игры
     playRound(playerAction) {
         if (this.roundsLeft <= 0) {
             this.endGame();
             return;
         }
+        // Временно включаем случайный выбор переходов в стратегии
+        const originalGetNextState = this.game.strategy.getNextState;
+        this.game.strategy.getNextState = (currentNodeId, action) => {
+            return originalGetNextState.call(this.game.strategy, currentNodeId, action, true);
+        };
         const result = this.game.playRound(playerAction);
+        this.game.strategy.getNextState = originalGetNextState;
+
         this.currentNodeId = result.nextNodeId;
         this.playerScore = this.game.playerScore;
         this.opponentScore = this.game.opponentScore;
@@ -165,20 +190,22 @@ export class GameUI {
         }
     }
 
+    // Обновляет счёт и номер раунда на экране
     updateScore() {
         document.getElementById('player-score').innerText = this.playerScore;
         document.getElementById('opponent-score').innerText = this.opponentScore;
         document.getElementById('round-counter').innerText = `${this.game.round}/${this.totalRounds}`;
     }
 
+    // Создаёт панель управления (кнопки "Завершить", "Рестарт", отображение матрицы)
     createControlPanel() {
         document.getElementById('btn-finish-game').onclick = () => {
             this.destroy();
             if (this.onFinish) {
                 this.onFinish();
-            }
-            else {
-                window.goBack();
+            } else {
+                document.getElementById('game-submenu').style.display = 'block';
+                document.getElementById('game-area').style.display = 'none';
             }
         };
         document.getElementById('btn-restart-game').onclick = () => {
@@ -189,6 +216,7 @@ export class GameUI {
         if (matrixDiv) matrixDiv.innerHTML = payoffMatrixTemplate(this.payoff);
     }
 
+    // Уничтожает Cytoscape и очищает контейнер
     destroy() {
         if (this.cy) {
             this.cy.destroy();
@@ -203,6 +231,7 @@ export class GameUI {
         }
     }
 
+    // Завершает игру и показывает результат
     endGame() {
         let message = 'Игра окончена!\n';
         if (this.playerScore > this.opponentScore) message += 'Вы выиграли!';
