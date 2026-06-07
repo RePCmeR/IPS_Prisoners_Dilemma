@@ -12,6 +12,7 @@ function editorTemplate() {
             <button id="btn-toggle-strategy" class="btn" style="width:auto; background:var(--danger);">Противник</button>
             <button id="btn-save-strategy" class="btn btn-primary" style="width:auto;">Сохранить</button>
             <button id="btn-load-preset" class="btn btn-secondary" style="width:auto;">Загрузить встроенную</button>
+            <button id="btn-discard-changes" class="btn btn-outline" style="width:auto;">Отменить изменения</button>
             <button id="btn-delete-selected" class="btn btn-outline" style="width:auto;">Удалить</button>
         </div>
         <div id="editor-main">
@@ -22,6 +23,26 @@ function editorTemplate() {
             <div id="cy-container"></div>
         </div>
         <button id="btn-back-editor" class="btn btn-secondary" style="margin-top:1rem;">Назад</button>
+    </div>
+    <div id="edge-modal" class="modal" style="display:none;">
+        <div class="modal-content card">
+            <h3>Создание ребра</h3>
+            <div class="edge-form">
+                <label>Действие игрока:</label>
+                <div class="action-buttons">
+                    <button id="edge-action-c" class="action-btn">🟢 Сотрудничать</button>
+                    <button id="edge-action-d" class="action-btn">🔴 Предать</button>
+                </div>
+                <div class="prob-input">
+                    <label>Вероятность:</label>
+                    <input id="edge-prob" type="number" min="0" max="1" step="0.01" value="1">
+                </div>
+            </div>
+            <div style="display:flex; gap:10px; justify-content:center; margin-top:1rem;">
+                <button id="edge-create" class="btn btn-primary" style="width:auto;">Создать</button>
+                <button id="edge-cancel" class="btn btn-outline" style="width:auto;">Отмена</button>
+            </div>
+        </div>
     </div>
     `;
 }
@@ -40,9 +61,17 @@ const parentScreen = {
     editor: 'simulator',
     tournament: 'simulator'
 };
-window.parentScreen = parentScreen; // для доступа из других модулей
+window.parentScreen = parentScreen;
 
 window.currentPayoff = { ...DEFAULT_PAYOFF };
+
+window.showMessage = (text) => {
+    document.getElementById('message-modal-text').innerText = text;
+    document.getElementById('message-modal').style.display = 'flex';
+    document.getElementById('message-modal-ok').onclick = () => {
+        document.getElementById('message-modal').style.display = 'none';
+    };
+};
 
 function resetGameScreen() {
     document.getElementById('game-submenu').style.display = 'block';
@@ -107,6 +136,12 @@ document.getElementById('btn-back-editor').onclick = () => {
         window.simUI.showPlayArea();
     }
 };
+document.getElementById('btn-discard-changes').onclick = () => {
+    if (window.graphEditor) {
+        window.graphEditor.discardChanges();
+        window.showMessage('Изменения отменены.');
+    }
+};
 
 document.getElementById('btn-delete-selected').onclick = () => {
     if (window.graphEditor?.cy) {
@@ -128,17 +163,51 @@ document.getElementById('btn-exit').onclick = () => window.close();
 document.getElementById('btn-back-game').onclick = () => goBackFrom('game');
 
 document.getElementById('btn-random-level').onclick = () => {
-    document.getElementById('game-submenu').style.display = 'none';
-    document.getElementById('game-area').style.display = 'block';
-    if (window.__currentGameUI) window.__currentGameUI.destroy();
-    const randomStrat = generateRandomStrategy('Случайный противник', 5, false);
-    const randomPayoff = generateRandomPayoff();
-    window.__currentGameUI = new GameUI('game-area', randomStrat, 10, randomPayoff, () => {
-        document.getElementById('game-submenu').style.display = 'block';
-        document.getElementById('game-area').style.display = 'none';
-        window.__currentGameUI = null;
-    });
+    const modal = document.getElementById('nodes-modal');
+    const slider = document.getElementById('nodes-slider');
+    const countDisplay = document.getElementById('nodes-count');
+    const minusBtn = document.getElementById('nodes-minus');
+    const plusBtn = document.getElementById('nodes-plus');
+    const startBtn = document.getElementById('nodes-start');
+    const cancelBtn = document.getElementById('nodes-cancel');
+
+    const updateCount = (value) => {
+        slider.value = value;
+        countDisplay.textContent = value;
+    };
+    slider.oninput = () => updateCount(slider.value);
+    minusBtn.onclick = () => {
+        if (parseInt(slider.value) > 2) updateCount(parseInt(slider.value) - 1);
+    };
+    plusBtn.onclick = () => {
+        if (parseInt(slider.value) < 15) updateCount(parseInt(slider.value) + 1);
+    };
+
+    updateCount(5);
+    modal.style.display = 'flex';
+
+    startBtn.onclick = () => {
+        const nodeCount = parseInt(slider.value);
+        modal.style.display = 'none';
+
+        document.getElementById('game-submenu').style.display = 'none';
+        document.getElementById('game-area').style.display = 'block';
+        if (window.__currentGameUI) window.__currentGameUI.destroy();
+
+        const randomStrat = generateRandomStrategy('Случайный противник', nodeCount, false);
+        const randomPayoff = generateRandomPayoff();
+        window.__currentGameUI = new GameUI('game-area', randomStrat, 10, randomPayoff, () => {
+            document.getElementById('game-submenu').style.display = 'block';
+            document.getElementById('game-area').style.display = 'none';
+            window.__currentGameUI = null;
+        });
+    };
+
+    cancelBtn.onclick = () => {
+        modal.style.display = 'none';
+    };
 };
+
 document.getElementById('btn-levels').onclick = () => {
     document.getElementById('game-submenu').style.display = 'none';
     document.getElementById('game-area').style.display = 'block';

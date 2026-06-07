@@ -90,12 +90,85 @@
                     <div id="tournament-bracket"></div>
                     <div id="strategy-list"></div>
                 </div>
-                <div id="tournament-controls">
+                <div id="tournament-controls" style="display:flex; align-items:center; gap:1rem; flex-wrap:wrap; margin-top:1rem;">
                     <button id="btn-start-tournament" class="btn btn-primary">Старт турнира</button>
+                    <button id="btn-rounds-config" class="btn btn-secondary" style="width:auto;">Раунды: 10</button>
+                    <button id="btn-config-payoff-tournament" class="btn btn-secondary" style="width:auto;">Матрица</button>
                 </div>
                 <button id="btn-back-tournament" class="btn btn-secondary" style="margin-top:1rem;">Назад</button>
             </div>
         </section>
+
+        <div id="nodes-modal" class="modal" style="display:none;">
+            <div class="modal-content card">
+                <h3>Настройка случайного уровня</h3>
+                <p class="description" style="margin-bottom:1rem;">Выберите количество вершин (от 2 до 15)</p>
+                <div style="display:flex; align-items:center; justify-content:center; gap:1rem; margin-bottom:1.5rem;">
+                    <button id="nodes-minus" class="btn btn-secondary" style="width:auto;">−</button>
+                    <span id="nodes-count" style="font-size:2rem; font-weight:bold; width:60px; text-align:center;">5</span>
+                    <button id="nodes-plus" class="btn btn-secondary" style="width:auto;">+</button>
+                </div>
+                <input id="nodes-slider" type="range" min="2" max="15" value="5" style="width:100%; margin-bottom:1.5rem;" />
+                <div style="display:flex; gap:10px; justify-content:center;">
+                    <button id="nodes-start" class="btn btn-primary" style="width:auto;">Начать игру</button>
+                    <button id="nodes-cancel" class="btn btn-outline" style="width:auto;">Отмена</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="results-modal" class="modal" style="display:none;">
+            <div id="results-content" class="modal-content card" style="max-width:500px;"></div>
+        </div>
+
+        <div id="payoff-modal" class="modal" style="display:none;">
+            <div class="modal-content card" style="max-width:500px;">
+                <h3>Матрица выигрышей</h3>
+                <table style="margin: 0 auto; border-collapse: collapse;">
+                    <tr><th></th><th style="padding: 8px;">C противника</th><th style="padding: 8px;">D противника</th></tr>
+                    <tr><td style="padding: 8px;">C игрока</td><td style="padding: 8px;"><input id="pay-cc-p" type="number" style="width:60px;"> : <input id="pay-cc-o" type="number" style="width:60px;"></td><td style="padding: 8px;"><input id="pay-cd-p" type="number" style="width:60px;"> : <input id="pay-cd-o" type="number" style="width:60px;"></td></tr>
+                    <tr><td style="padding: 8px;">D игрока</td><td style="padding: 8px;"><input id="pay-dc-p" type="number" style="width:60px;"> : <input id="pay-dc-o" type="number" style="width:60px;"></td><td style="padding: 8px;"><input id="pay-dd-p" type="number" style="width:60px;"> : <input id="pay-dd-o" type="number" style="width:60px;"></td></tr>
+                </table>
+                <div style="text-align:center; margin-top:1rem;">
+                    <button id="btn-save-payoff" class="btn btn-primary">Сохранить</button>
+                    <button id="btn-cancel-payoff" class="btn btn-secondary" style="margin-left:10px;">Отмена</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="rounds-modal" class="modal" style="display:none;">
+            <div class="modal-content card">
+                <h3>Количество раундов</h3>
+                <p class="description" style="margin-bottom:1rem;">Выберите количество раундов (от 1 до 50)</p>
+                <div style="display:flex; align-items:center; justify-content:center; gap:1rem; margin-bottom:1.5rem;">
+                    <button id="rounds-minus" class="btn btn-secondary" style="width:auto;">−</button>
+                    <span id="rounds-count" style="font-size:2rem; font-weight:bold; width:60px; text-align:center;">10</span>
+                    <button id="rounds-plus" class="btn btn-secondary" style="width:auto;">+</button>
+                </div>
+                <input id="rounds-slider" type="range" min="1" max="50" value="10" style="width:100%; margin-bottom:1.5rem;" />
+                <div style="display:flex; gap:10px; justify-content:center;">
+                    <button id="rounds-save" class="btn btn-primary" style="width:auto;">Применить</button>
+                    <button id="rounds-cancel" class="btn btn-outline" style="width:auto;">Отмена</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="input-modal" class="modal" style="display:none;">
+            <div class="modal-content card">
+                <h3 id="input-modal-title">Введите значение</h3>
+                <input id="input-modal-field" type="text" style="width:100%; padding:0.5rem; margin:1rem 0; background:var(--card-bg); border:1px solid rgba(255,255,255,0.2); border-radius:8px; color:var(--text-main);" />
+                <div style="display:flex; gap:10px; justify-content:center;">
+                    <button id="input-modal-ok" class="btn btn-primary">ОК</button>
+                    <button id="input-modal-cancel" class="btn btn-outline">Отмена</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="message-modal" class="modal" style="display:none;">
+            <div class="modal-content card" style="max-width:400px; text-align:center;">
+                <p id="message-modal-text"></p>
+                <button id="message-modal-ok" class="btn btn-primary" style="margin-top:1rem;">ОК</button>
+            </div>
+        </div>
     </div>
     <script type="module" src="src/main.js"></script>
 </body>

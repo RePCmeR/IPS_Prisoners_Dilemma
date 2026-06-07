@@ -10,11 +10,28 @@ export class GraphEditor {
         this.currentMode = 'opponent';
         this.opponentStrategy = null;
         this.myStrategy = null;
+        this.originalOpponent = null;
+        this.originalMy = null;
 
         this.initCytoscape();
         this.initDragAndDrop();
         this.initEdgeCreation();
         this.initDeletion();
+    }
+
+    saveOriginalState() {
+        this.originalOpponent = this.opponentStrategy ? this.opponentStrategy.clone() : null;
+        this.originalMy = this.myStrategy ? this.myStrategy.clone() : null;
+    }
+
+    discardChanges() {
+        if (this.currentMode === 'opponent') {
+            this.opponentStrategy = this.originalOpponent;
+            this.loadStrategyToEditor(this.opponentStrategy);
+        } else {
+            this.myStrategy = this.originalMy;
+            this.loadStrategyToEditor(this.myStrategy);
+        }
     }
 
     initCytoscape() {
@@ -80,30 +97,17 @@ export class GraphEditor {
             ],
             layout: { name: 'preset' },
             userZooming: true,
-            userPanning: true,
-            autoungrabify: false,
-            autolock: false
-        });
-
-        this.container.style.outline = 'none';
-
-        this.container.addEventListener('click', () => {
-            this.container.focus();
+            userPanning: true
         });
     }
 
     initDeletion() {
-        this.container.addEventListener('keydown', (event) => {
+        this.cy.on('keydown', (event) => {
             if (event.key === 'Delete' || event.key === 'Backspace') {
-                event.preventDefault();
                 const selected = this.cy.elements(':selected');
-                if (selected.length > 0) {
-                    selected.remove();
-                }
+                if (selected.length > 0) selected.remove();
             }
         });
-
-        this.container.setAttribute('tabindex', '0');
     }
 
     switchMode(mode) {
@@ -184,9 +188,55 @@ export class GraphEditor {
         });
     }
 
+    requestEdgeData() {
+        return new Promise((resolve) => {
+            const modal = document.getElementById('edge-modal');
+            if (!modal) { resolve(null); return; }
+            modal.style.display = 'flex';
+            document.getElementById('edge-action').value = 'C';
+            document.getElementById('edge-prob').value = '1';
+
+            const cBtn = document.getElementById('edge-action-c');
+            const dBtn = document.getElementById('edge-action-d');
+            const createBtn = document.getElementById('edge-create');
+            const cancelBtn = document.getElementById('edge-cancel');
+
+            cBtn.classList.remove('selected');
+            dBtn.classList.remove('selected');
+
+            const setAction = (action) => {
+                document.getElementById('edge-action').value = action;
+                if (action === 'C') {
+                    cBtn.classList.add('selected');
+                    dBtn.classList.remove('selected');
+                } else {
+                    dBtn.classList.add('selected');
+                    cBtn.classList.remove('selected');
+                }
+            };
+            cBtn.onclick = () => setAction('C');
+            dBtn.onclick = () => setAction('D');
+            setAction('C');
+
+            const cleanup = () => {
+                modal.style.display = 'none';
+                cBtn.classList.remove('selected');
+                dBtn.classList.remove('selected');
+            };
+            createBtn.onclick = () => {
+                const action = document.getElementById('edge-action').value;
+                let prob = parseFloat(document.getElementById('edge-prob').value);
+                if (isNaN(prob) || prob < 0 || prob > 1) prob = 1;
+                cleanup();
+                resolve({ action, probability: prob < 1 ? prob : undefined });
+            };
+            cancelBtn.onclick = () => { cleanup(); resolve(null); };
+        });
+    }
+
     initEdgeCreation() {
         let sourceNode = null;
-        this.cy.on('tap', 'node', evt => {
+        this.cy.on('tap', 'node', async (evt) => {
             const node = evt.target;
             if (!sourceNode) {
                 sourceNode = node;
@@ -194,45 +244,47 @@ export class GraphEditor {
                 return;
             }
             if (sourceNode === node) {
-                const action = prompt('Действие для петли (C или D)?')?.toUpperCase();
-                if (!['C', 'D'].includes(action)) {
+                const data = await this.requestEdgeData();
+                if (!data) {
                     sourceNode.removeClass('selected');
                     sourceNode = null;
                     return;
                 }
-                const probStr = prompt('Вероятность (1 = всегда):');
-                let prob = parseFloat(probStr) || 1;
+                const prob = data.probability;
+                const label = data.action + (prob ? ` (${prob.toFixed(2)})` : '');
                 this.cy.add({
                     group: 'edges',
                     data: {
                         source: sourceNode.id(),
                         target: sourceNode.id(),
-                        playerAction: action,
-                        probability: prob < 1 ? prob : undefined
+                        playerAction: data.action,
+                        probability: prob,
+                        label
                     },
-                    classes: action === 'C' ? 'playerC' : 'playerD'
+                    classes: data.action === 'C' ? 'playerC' : 'playerD'
                 });
                 sourceNode.removeClass('selected');
                 sourceNode = null;
                 return;
             }
-            const action = prompt('Действие игрока для перехода (C или D)?')?.toUpperCase();
-            if (!['C', 'D'].includes(action)) {
+            const data = await this.requestEdgeData();
+            if (!data) {
                 sourceNode.removeClass('selected');
                 sourceNode = null;
                 return;
             }
-            const probStr = prompt('Вероятность (1 = всегда, 0-1 для стохастического):');
-            let prob = parseFloat(probStr) || 1;
+            const prob = data.probability;
+            const label = data.action + (prob ? ` (${prob.toFixed(2)})` : '');
             this.cy.add({
                 group: 'edges',
                 data: {
                     source: sourceNode.id(),
                     target: node.id(),
-                    playerAction: action,
-                    probability: prob < 1 ? prob : undefined
+                    playerAction: data.action,
+                    probability: prob,
+                    label
                 },
-                classes: action === 'C' ? 'playerC' : 'playerD'
+                classes: data.action === 'C' ? 'playerC' : 'playerD'
             });
             sourceNode.removeClass('selected');
             sourceNode = null;
@@ -264,34 +316,82 @@ export class GraphEditor {
                 }
             }
         });
-        if (modified) alert('В некоторых вершинах не было переходов для C или D. Автоматически добавлены петли.');
+        if (modified) window.showMessage('В некоторых вершинах не было переходов для C или D. Автоматически добавлены петли.');
     }
 
-    save() {
+    async promptForName(defaultName) {
+        return new Promise((resolve) => {
+            const modal = document.getElementById('input-modal');
+            const title = document.getElementById('input-modal-title');
+            const field = document.getElementById('input-modal-field');
+            const okBtn = document.getElementById('input-modal-ok');
+            const cancelBtn = document.getElementById('input-modal-cancel');
+
+            title.innerText = 'Название стратегии';
+            field.value = defaultName || 'Моя стратегия';
+            modal.style.display = 'flex';
+
+            const cleanup = () => { modal.style.display = 'none'; };
+            okBtn.onclick = () => { cleanup(); resolve(field.value.trim() || defaultName); };
+            cancelBtn.onclick = () => { cleanup(); resolve(null); };
+        });
+    }
+
+    async save() {
         this.saveCurrentToStrategy();
         this.validateStrategy();
         this.saveCurrentToStrategy();
+
         if (this.opponentStrategy) {
-            this.opponentStrategy.name = prompt('Название стратегии противника:', 'Моя стратегия') || 'Безымянная';
-            saveStrategy(this.opponentStrategy);
+            const name = await this.promptForName('Стратегия противника');
+            if (name) {
+                this.opponentStrategy.name = name;
+                saveStrategy(this.opponentStrategy);
+                window.showMessage('Стратегия противника сохранена!');
+            }
         }
         if (this.myStrategy) {
-            this.myStrategy.name = prompt('Название моей стратегии:', 'Моя стратегия') || 'Безымянная';
-            saveStrategy(this.myStrategy);
+            const name = await this.promptForName('Моя стратегия');
+            if (name) {
+                this.myStrategy.name = name;
+                saveStrategy(this.myStrategy);
+                window.showMessage('Моя стратегия сохранена!');
+            }
         }
-        alert('Стратегии сохранены.');
+        this.originalOpponent = this.opponentStrategy ? this.opponentStrategy.clone() : null;
+        this.originalMy = this.myStrategy ? this.myStrategy.clone() : null;
     }
 
-    loadPreset() {
+    async loadPreset() {
         const names = presetStrategies.map(s => s.name);
-        const choice = prompt('Встроенные стратегии:\n' + names.join('\n') + '\nВведите имя:');
-        const preset = presetStrategies.find(s => s.name === choice);
-        if (preset) {
-            const clone = preset.clone();
-            if (this.currentMode === 'opponent') this.opponentStrategy = clone;
-            else this.myStrategy = clone;
-            this.loadStrategyToEditor(clone);
-        }
+        const modal = document.getElementById('input-modal');
+        const title = document.getElementById('input-modal-title');
+        const field = document.getElementById('input-modal-field');
+        const okBtn = document.getElementById('input-modal-ok');
+        const cancelBtn = document.getElementById('input-modal-cancel');
+
+        title.innerText = 'Введите имя встроенной стратегии:\n' + names.join('\n');
+        field.value = '';
+        modal.style.display = 'flex';
+
+        return new Promise((resolve) => {
+            okBtn.onclick = () => {
+                modal.style.display = 'none';
+                const choice = field.value.trim();
+                const preset = presetStrategies.find(s => s.name === choice);
+                if (preset) {
+                    const clone = preset.clone();
+                    if (this.currentMode === 'opponent') this.opponentStrategy = clone;
+                    else this.myStrategy = clone;
+                    this.loadStrategyToEditor(clone);
+                }
+                resolve();
+            };
+            cancelBtn.onclick = () => {
+                modal.style.display = 'none';
+                resolve();
+            };
+        });
     }
 
     getOpponentStrategy() {
