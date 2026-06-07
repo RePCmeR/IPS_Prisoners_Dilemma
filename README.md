@@ -1,4 +1,4 @@
-# IPS_HSE_Perevalov_Daniil_2026
+# IPS_Prisoners_Dilemma
 ---
 # Игра-симулятор итеративной дилеммы заключенного
 
@@ -169,7 +169,7 @@ JavaScript отвечает за всю интерактивность: игро
 ### Структура проекта
 
 ```
-IPS_HSE_Perevalov_Daniil_2026/
+IPS_Prisoners_Dilemma/
 ├── index.html                  # точка входа, разметка и модальные окна
 ├── styles/
 │   ├── main.css                # глобальные стили и переменные
