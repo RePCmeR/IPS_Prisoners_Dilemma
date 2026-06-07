@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="styles/levels.css" />
     <link rel="stylesheet" href="styles/simulator.css" />
     <link rel="stylesheet" href="styles/tournament.css" />
+    <link rel="stylesheet" href="styles/tutorial.css" />
     <script src="https://unpkg.com/cytoscape/dist/cytoscape.min.js"></script>
 </head>
 <body>
@@ -54,12 +55,89 @@
             <div id="game-area" class="card" style="display:none;"></div>
             <div id="tutorial-panel" class="card" style="display:none;">
                 <h2>Обучение</h2>
-                <ul style="text-align:left; margin-bottom:1.5rem; line-height:1.8; list-style:none;">
-                    <li>🟢 <strong>Левая кнопка мыши</strong> по вершине — <span style="color:#4caf50;">Сотрудничать (C)</span></li>
-                    <li>🔴 <strong>Правая кнопка мыши</strong> по вершине — <span style="color:#f44336;">Предать (D)</span></li>
-                    <li>🎯 Ваша цель — набрать больше очков, чем противник</li>
-                </ul>
-                <button id="btn-back-tutorial" class="btn btn-secondary">Назад</button>
+                <div class="tutorial-content">
+                    <div class="tutorial-card">
+                        <span class="tutorial-step">Основы</span>
+                        <h3>Дилемма заключённого</h3>
+                        <p>Классическая модель теории игр, иллюстрирующая конфликт между личной выгодой и коллективным благом. Двое заключённых допрашиваются отдельно, и каждый выбирает: <span class="color-c">сотрудничать (C)</span> — хранить молчание, или <span class="color-d">предать (D)</span> — дать показания на сообщника.</p>
+                        <p><strong>Возможные исходы:</strong></p>
+                        <ul>
+                            <li>Оба предают — получают по <strong>3 года</strong>.</li>
+                            <li>Один предаёт, второй молчит — предатель выходит на свободу (<strong>0 лет</strong>), а хранивший молчание получает <strong>5 лет</strong>.</li>
+                            <li>Оба сотрудничают — оба получают по <strong>1 году</strong>.</li>
+                        </ul>
+                        <p>Парадокс в том, что индивидуально выгодно предать, но взаимное сотрудничество даёт лучший суммарный результат. В <strong>итеративной версии</strong> игра повторяется многократно, и участники накапливают очки согласно <strong>матрице выигрышей</strong>.</p>
+                    </div>
+
+                    <div class="tutorial-card">
+                        <span class="tutorial-step">Механика</span>
+                        <h3>Матрица выигрышей</h3>
+                        <p>Результат каждого раунда определяется таблицей. По умолчанию используется следующая (очки: <em>игрок, противник</em>):</p>
+                        <table class="payoff-table">
+                            <tr><th></th><th>C (противник)</th><th>D (противник)</th></tr>
+                            <tr><td><strong>C (вы)</strong></td><td>3 : 3</td><td>0 : 5</td></tr>
+                            <tr><td><strong>D (вы)</strong></td><td>5 : 0</td><td>1 : 1</td></tr>
+                        </table>
+                        <p><span class="color-c">C, C</span> — взаимное сотрудничество (умеренный выигрыш).<br>
+                        <span class="color-c">C</span>, <span class="color-d">D</span> — вас предали (наибольший проигрыш).<br>
+                        <span class="color-d">D</span>, <span class="color-c">C</span> — вы предали (наибольший выигрыш).<br>
+                        <span class="color-d">D, D</span> — взаимное предательство (минимальный выигрыш).</p>
+                        <p>Матрицу можно изменить в разделе <strong>«Симулятор»</strong> или перед турниром — это меняет баланс между риском и наградой.</p>
+                    </div>
+
+                    <div class="tutorial-card">
+                        <span class="tutorial-step">Управление</span>
+                        <h3>Как играть</h3>
+                        <p>В ручном режиме вы взаимодействуете с графом стратегии противника:</p>
+                        <ul>
+                            <li><span class="color-c">Левая кнопка мыши</span> — Сотрудничать (C)</li>
+                            <li><span class="color-d">Правая кнопка мыши</span> — Предать (D)</li>
+                            <li>Тачпад: <strong>нажатие двумя пальцами</strong> = правая кнопка</li>
+                        </ul>
+                    </div>
+
+                    <div class="tutorial-card">
+                        <span class="tutorial-step">Стратегии</span>
+                        <h3>Граф как конечный автомат</h3>
+                        <p>Каждая стратегия — это ориентированный граф, где:</p>
+                        <ul>
+                            <li><span class="color-c">Зелёная вершина</span> — сотрудничество (C)</li>
+                            <li><span class="color-d">Красная вершина</span> — предательство (D)</li>
+                            <li><span class="color-orange">Оранжевая обводка</span> — текущая вершина</li>
+                            <li><span class="color-c">Зелёное ребро</span> — переход при вашем C</li>
+                            <li><span class="color-d">Красное ребро</span> — переход при вашем D</li>
+                        </ul>
+                        <p>После каждого вашего клика текущая вершина перемещается по соответствующему ребру. Вы видите всю стратегию заранее — планируйте ходы, чтобы набрать максимум очков.</p>
+                    </div>
+
+                    <div class="tutorial-card">
+                        <span class="tutorial-step">Раздел «Игра»</span>
+                        <h3>Режимы игры</h3>
+                        <ul>
+                            <li><strong>Случайный уровень</strong> — генерирует непредсказуемый граф. Выберите число вершин (2–15) и попробуйте обыграть незнакомую стратегию.</li>
+                            <li><strong>Уровни</strong> — готовые стратегии (Всегда сотрудничать, Око за око, Pavlov и др.) с фиксированной матрицей и числом раундов.</li>
+                            <li><strong>Кнопка «Завершить игру»</strong> — возврат в меню выбора.</li>
+                            <li><strong>Кнопка «Рестарт»</strong> — перезапуск той же стратегии.</li>
+                        </ul>
+                    </div>
+
+                    <div class="tutorial-card">
+                        <span class="tutorial-step">Раздел «Симулятор»</span>
+                        <h3>Редактор и симуляция</h3>
+                        <p>В редакторе вы создаёте свои стратегии:</p>
+                        <ul>
+                            <li>Перетащите <span class="color-c">C</span> / <span class="color-d">D</span> вершину на холст.</li>
+                            <li>Клик по двум вершинам — создание ребра. В окне выберите действие и вероятность.</li>
+                            <li><strong>«Противник / Своя»</strong> — переключение редактируемой стратегии (зелёный — своя, красный — противник).</li>
+                            <li><strong>«Удалить»</strong> / <kbd>Delete</kbd> — удаление выделенных элементов.</li>
+                            <li><strong>«Отменить изменения»</strong> — возврат к последнему сохранённому состоянию.</li>
+                            <li><strong>«Сохранить»</strong> — запись стратегии в браузер для использования в турнирах.</li>
+                        </ul>
+                        <p><strong>1 на 1:</strong> если задан только противник — ручной режим, если оба графа — пошаговая симуляция с двумя графами. Кнопки <strong>«Матрица»</strong> и <strong>«Раунды»</strong> (1–50) настраивают параметры.</p>
+                        <p><strong>Турнир:</strong> перетащите стратегии в слоты сетки, настройте матрицу и раунды, нажмите «Старт» — все пары сыграют друг с другом, а результаты покажут турнирную таблицу.</p>
+                    </div>
+                </div>
+                <button id="btn-back-tutorial" class="btn btn-secondary" style="margin-top:1.5rem;">Назад</button>
             </div>
         </section>
 

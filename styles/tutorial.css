@@ -1,0 +1,129 @@
+.tutorial-content {
+  max-height: 65vh;
+  overflow-y: auto;
+  padding-right: 10px;
+  scroll-behavior: smooth;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.tutorial-card {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 16px;
+  padding: 24px;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.tutorial-card:hover {
+  border-color: rgba(139, 92, 246, 0.3);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.tutorial-step {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: #00f2ff;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.tutorial-card h3 {
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 12px;
+  background: linear-gradient(135deg, #c084fc 0%, #a78bfa 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.tutorial-card p {
+  color: var(--text-muted);
+  line-height: 1.7;
+  margin-bottom: 12px;
+}
+
+.tutorial-card ul {
+  list-style: none;
+  margin-left: 0;
+  margin-bottom: 12px;
+}
+
+.tutorial-card ul li {
+  color: var(--text-muted);
+  line-height: 1.8;
+  padding-left: 1.5rem;
+  position: relative;
+  margin-bottom: 4px;
+}
+
+.tutorial-card ul li::before {
+  content: '▸';
+  color: #a78bfa;
+  position: absolute;
+  left: 0;
+  font-size: 0.9rem;
+}
+
+.tutorial-card strong {
+  color: var(--text-main);
+}
+
+.tutorial-card kbd {
+  display: inline-block;
+  padding: 2px 6px;
+  font-size: 0.85rem;
+  font-family: 'Courier New', monospace;
+  color: var(--text-main);
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  margin: 0 2px;
+}
+
+.color-c {
+  color: #4ade80;
+  font-weight: 600;
+  text-shadow: 0 0 8px rgba(74, 222, 128, 0.3);
+}
+
+.color-d {
+  color: #f87171;
+  font-weight: 600;
+  text-shadow: 0 0 8px rgba(248, 113, 113, 0.3);
+}
+
+.color-orange {
+  color: #fb923c;
+  font-weight: 600;
+  text-shadow: 0 0 8px rgba(251, 146, 60, 0.3);
+}
+
+.payoff-table {
+  margin: 12px 0;
+  border-collapse: collapse;
+  width: 100%;
+  max-width: 400px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.payoff-table th,
+.payoff-table td {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 8px 12px;
+  text-align: center;
+  color: var(--text-main);
+}
+
+.payoff-table th {
+  background: rgba(139, 92, 246, 0.15);
+  font-weight: 600;
+  color: #c084fc;
+}
