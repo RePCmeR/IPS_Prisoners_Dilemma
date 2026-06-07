@@ -97,15 +97,26 @@ export class GraphEditor {
             ],
             layout: { name: 'preset' },
             userZooming: true,
-            userPanning: true
+            userPanning: true,
+            autoungrabify: false,
+            autolock: false
         });
+
+        this.container.style.outline = 'none';
+        this.container.addEventListener('click', () => {
+            this.container.focus();
+        });
+        this.container.setAttribute('tabindex', '0');
     }
 
     initDeletion() {
-        this.cy.on('keydown', (event) => {
+        this.container.addEventListener('keydown', (event) => {
             if (event.key === 'Delete' || event.key === 'Backspace') {
+                event.preventDefault();
                 const selected = this.cy.elements(':selected');
-                if (selected.length > 0) selected.remove();
+                if (selected.length > 0) {
+                    selected.remove();
+                }
             }
         });
     }
