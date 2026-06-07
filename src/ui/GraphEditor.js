@@ -195,13 +195,16 @@ export class GraphEditor {
             modal.style.display = 'flex';
             document.getElementById('edge-action').value = 'C';
             document.getElementById('edge-prob').value = '1';
+            document.getElementById('prob-value').innerText = '1.00';
 
             const cBtn = document.getElementById('edge-action-c');
             const dBtn = document.getElementById('edge-action-d');
+            const probSlider = document.getElementById('edge-prob');
+            const probDisplay = document.getElementById('prob-value');
             const createBtn = document.getElementById('edge-create');
             const cancelBtn = document.getElementById('edge-cancel');
 
-            cBtn.classList.remove('selected');
+            cBtn.classList.add('selected');
             dBtn.classList.remove('selected');
 
             const setAction = (action) => {
@@ -216,7 +219,10 @@ export class GraphEditor {
             };
             cBtn.onclick = () => setAction('C');
             dBtn.onclick = () => setAction('D');
-            setAction('C');
+
+            probSlider.oninput = () => {
+                probDisplay.innerText = parseFloat(probSlider.value).toFixed(2);
+            };
 
             const cleanup = () => {
                 modal.style.display = 'none';
@@ -225,7 +231,7 @@ export class GraphEditor {
             };
             createBtn.onclick = () => {
                 const action = document.getElementById('edge-action').value;
-                let prob = parseFloat(document.getElementById('edge-prob').value);
+                let prob = parseFloat(probSlider.value);
                 if (isNaN(prob) || prob < 0 || prob > 1) prob = 1;
                 cleanup();
                 resolve({ action, probability: prob < 1 ? prob : undefined });

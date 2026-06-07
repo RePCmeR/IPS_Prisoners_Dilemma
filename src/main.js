@@ -30,12 +30,14 @@ function editorTemplate() {
             <div class="edge-form">
                 <label>Действие игрока:</label>
                 <div class="action-buttons">
-                    <button id="edge-action-c" class="action-btn">🟢 Сотрудничать</button>
-                    <button id="edge-action-d" class="action-btn">🔴 Предать</button>
+                    <button id="edge-action-c" class="edge-action-btn">🟢 Сотрудничать</button>
+                    <button id="edge-action-d" class="edge-action-btn">🔴 Предать</button>
                 </div>
-                <div class="prob-input">
-                    <label>Вероятность:</label>
-                    <input id="edge-prob" type="number" min="0" max="1" step="0.01" value="1">
+                <input type="hidden" id="edge-action" value="C">
+                <label for="edge-prob">Вероятность:</label>
+                <input id="edge-prob" type="range" min="0" max="1" step="0.01" value="1">
+                <div class="prob-display">
+                    <span id="prob-value">1.00</span>
                 </div>
             </div>
             <div style="display:flex; gap:10px; justify-content:center; margin-top:1rem;">

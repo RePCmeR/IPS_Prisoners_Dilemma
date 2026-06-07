@@ -122,6 +122,56 @@ h2 {
     background: rgba(239, 68, 68, 0.1);
 }
 
+.edge-action-btn {
+    padding: 0.8rem 1.5rem;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-main);
+}
+.edge-action-btn.selected#edge-action-c {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: white;
+}
+.edge-action-btn.selected#edge-action-d {
+    background: var(--danger);
+    border-color: var(--danger);
+    color: white;
+}
+
+.edge-form input[type="range"] {
+    width: 100%;
+    margin: 10px 0;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+    outline: none;
+    -webkit-appearance: none;
+    appearance: none;
+}
+.edge-form input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    background: var(--primary);
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid white;
+}
+.prob-display {
+    text-align: center;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--primary);
+    margin-top: 5px;
+}
+
 .back-btn {
     display: inline-flex;
     align-items: center;
@@ -218,32 +268,6 @@ h2 {
 .modal-content .btn {
     width: auto;
     padding: 0.8rem 1.2rem;
-}
-
-.action-btn {
-    padding: 0.8rem 1.5rem;
-    border: none;
-    border-radius: 12px;
-    font-size: 1rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    background: rgba(255, 255, 255, 0.05);
-    color: var(--text-main);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-}
-.action-btn.selected {
-    transform: scale(1.05);
-}
-.action-btn#edge-action-c.selected {
-    background: var(--accent);
-    border-color: var(--accent);
-    color: white;
-}
-.action-btn#edge-action-d.selected {
-    background: var(--danger);
-    border-color: var(--danger);
-    color: white;
 }
 
 @keyframes fadeIn {
